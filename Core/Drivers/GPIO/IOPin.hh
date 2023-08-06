@@ -3,11 +3,12 @@
 
 #include <IOPinTypes.hh>
 #include <Container.hh>
-#include <PeripheralBase.hh>
+#include <STM32PeripheralBase.hh>
 #include <IOPinTypes.hh>
 
 
-#define COMPILE
+
+//#define COMPILE
 #ifdef COMPILE
 
 #define AVAILABLE_PORTS 7U
@@ -29,12 +30,14 @@ enum class IOPinStatusCodes
 //using IOPinPropertiesContainer = Container<IOPinProperties, GpioPort, GpioPin, GpioMode, GpioState, GpioOutputType, GpioOutputSpeed, GpioPUPD>;
 
 enum class IOPinProperties : uint8_t { port, pin, mode, state,  __length };
+constexpr std::size_t IOPinMandatoryParameters = static_cast<std::size_t>(IOPinProperties::port) | static_cast<std::size_t>(IOPinProperties::pin);
 using IOPinPropertiesContainer = Container<IOPinProperties, GpioPort, GpioPin, GpioMode, GpioState>;
-using IOPinParent = PeripheralBase<GPIO_TypeDef, IOPinStatusCodes,  IOPinPropertiesContainer>;
-using ConfigPortFunctionType = bool(*)(const GpioPort&, IOPinParent*);
-using ConfigPinFunctionType = bool(*)(const GpioPin&, IOPinParent*);
-using ConfigModeFunctionType = bool(*)(const GpioMode&, IOPinParent*);
-using ConfigStateFunctionType = bool(*)(const GpioState&, IOPinParent*);
+using IOPinParent = STM32PeripheralBase<GPIO_TypeDef, IOPinStatusCodes, IOPinMandatoryParameters, IOPinPropertiesContainer>;
+using ConfigFunctionsArgumentType = PeripheralBase<IOPinStatusCodes, IOPinMandatoryParameters, IOPinPropertiesContainer>;
+using ConfigPortFunctionType = bool(*)(const GpioPort&, ConfigFunctionsArgumentType*);
+using ConfigPinFunctionType = bool(*)(const GpioPin&, ConfigFunctionsArgumentType*);
+using ConfigModeFunctionType = bool(*)(const GpioMode&, ConfigFunctionsArgumentType*);
+using ConfigStateFunctionType = bool(*)(const GpioState&, ConfigFunctionsArgumentType*);
 using IOPinFunctionsContainer = Container<IOPinProperties, ConfigPortFunctionType, ConfigPinFunctionType, ConfigModeFunctionType, ConfigStateFunctionType>;
 
 
@@ -125,23 +128,23 @@ class IOPin  : public IOPinParent
         template <typename Arg>
         IOPinStatusCodes init(const Arg &arg);
 
-        constexpr static bool configPort(const GpioPort& mode, IOPinParent* obj) {
+        constexpr static bool configPort(const GpioPort& mode, ConfigFunctionsArgumentType* obj) {
 
             return true; 
         }
-        constexpr static bool configPin(const GpioPin& pin, IOPinParent* obj) {
-
-            uint32_t a = 32;
-            uint32_t b = a / 41;
-            return true; 
-        }
-        constexpr static bool configMode(const GpioMode& pin, IOPinParent* obj) {
+        constexpr static bool configPin(const GpioPin& pin, ConfigFunctionsArgumentType* obj) {
 
             uint32_t a = 32;
             uint32_t b = a / 41;
             return true; 
         }
-        constexpr static bool configState(const GpioState& pin, IOPinParent* obj) {
+        constexpr static bool configMode(const GpioMode& pin, ConfigFunctionsArgumentType* obj) {
+
+            uint32_t a = 32;
+            uint32_t b = a / 41;
+            return true; 
+        }
+        constexpr static bool configState(const GpioState& pin, ConfigFunctionsArgumentType* obj) {
 
             uint32_t a = 32;
             uint32_t b = a / 41;

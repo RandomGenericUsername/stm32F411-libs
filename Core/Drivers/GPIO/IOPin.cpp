@@ -7,9 +7,7 @@ IOPin::IOPin()
     : IOPinParent(IOPinFunctionsContainer{&IOPin::configPort, &IOPin::configPin, &IOPin::configMode, &IOPin::configState})
 {
     //setConfigFunctionsExecutionOrder(IOPinFunctionsExecutionOrder{IOPinProperties::mode, IOPinProperties::pin, IOPinProperties::port});
-    setAllParametersValue(GpioPort::A, GpioPin::null, GpioMode::alternateFunction, GpioState::null);
-    setParameterAsMandatory(IOPinProperties::mode);
-    setParameterAsMandatory(IOPinProperties::port);
+    //setAllParametersValue(GpioPort::A, GpioPin::null, GpioMode::alternateFunction, GpioState::null);
 
 }
 

@@ -1,17 +1,23 @@
-#include <stm32f411xe.h>
+#define STM32F411
+
+#include <string>
+#include <system.h>
+#include <PeripheralClocks.hh>
+#include <RCC.hh>
+#include <IOPin.hh>
+#include <PeripheralBaseExceptionHandler.hh>
+#include <PeripheralBase.hh>
 
 
+using namespace std::string_literals;
+IOPin A;
 
 int main(void)
 {
-    RCC->AHB1ENR |= 1;
-    GPIOA->MODER |= 1 << 10;
-
     while(1)
     {
-        GPIOA->ODR |= 1 << 5;
-        for(unsigned int i = 0; i < 1000000; i++);
-        GPIOA->ODR &= ~(1 << 5);
+
     }
+    
     return 0;
 }

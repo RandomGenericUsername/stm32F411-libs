@@ -1,0 +1,101 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "build"
+            ],
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "pattern": {
+                  "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                  "file": 1,
+                  "line": 2,
+                  "column": 3,
+                  "severity": 4,
+                  "message": 5
+                }
+              },
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Flash Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "flash"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "dependsOn": "Clean & Build"
+        },
+        {
+            "label": "Clean & Build",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Clean Project", "Build Project"]
+        },
+        {
+            "label": "Build Test",
+            "type": "shell",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-std=c++2a",
+                //"-I",
+                //"${workspaceFolder}/Core/Include/",
+                //"-I",
+                //"${workspaceFolder}/Core/Include/CMSIS/",
+                //"-I",
+                //"${workspaceFolder}/Core/Include/CMSIS/Include",
+                //"-I",
+                //"${workspaceFolder}/Core/Include/CMSIS/Device/",
+                //"-I",
+                //"${workspaceFolder}/Core/Include/CMSIS/Device/ST/STM32F4xx/Include",
+                //"-I",
+                //"${workspaceFolder}/Core/Utils/**",
+                "-g",
+                "${workspaceFolder}/Tests/**.cpp",
+                "-o",
+                "${workspaceFolder}/Tests/Build/Test.elf"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Run Test",
+            "type": "shell",
+            "command": "./Test.elf",
+            "options": {
+                "cwd": "${workspaceFolder}/Tests/Build/"
+            },
+            "group": "test",
+            "dependsOn": [
+                "Build Test"
+            ],
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}

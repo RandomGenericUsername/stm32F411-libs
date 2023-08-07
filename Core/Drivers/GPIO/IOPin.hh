@@ -8,7 +8,7 @@
 
 
 
-//#define COMPILE
+#define COMPILE
 #ifdef COMPILE
 
 #define AVAILABLE_PORTS 7U
@@ -32,12 +32,12 @@ enum class IOPinStatusCodes
 enum class IOPinProperties : uint8_t { port, pin, mode, state,  __length };
 constexpr std::size_t IOPinMandatoryParameters = static_cast<std::size_t>(IOPinProperties::port) | static_cast<std::size_t>(IOPinProperties::pin);
 using IOPinPropertiesContainer = Container<IOPinProperties, GpioPort, GpioPin, GpioMode, GpioState>;
-using IOPinParent = STM32PeripheralBase<GPIO_TypeDef, IOPinStatusCodes, IOPinMandatoryParameters, IOPinPropertiesContainer>;
-using ConfigFunctionsArgumentType = PeripheralBase<IOPinStatusCodes, IOPinMandatoryParameters, IOPinPropertiesContainer>;
-using ConfigPortFunctionType = bool(*)(const GpioPort&, ConfigFunctionsArgumentType*);
-using ConfigPinFunctionType = bool(*)(const GpioPin&, ConfigFunctionsArgumentType*);
-using ConfigModeFunctionType = bool(*)(const GpioMode&, ConfigFunctionsArgumentType*);
-using ConfigStateFunctionType = bool(*)(const GpioState&, ConfigFunctionsArgumentType*);
+using IOPinPeripheralBase = PeripheralBase<IOPinStatusCodes, IOPinMandatoryParameters, IOPinPropertiesContainer>;
+using IOPinParent = STM32PeripheralBase<GPIO_TypeDef, IOPinPeripheralBase>;
+using ConfigPortFunctionType = IOPinStatusCodes(*)(const GpioPort&, IOPinPeripheralBase*);
+using ConfigPinFunctionType = IOPinStatusCodes(*)(const GpioPin&, IOPinPeripheralBase*);
+using ConfigModeFunctionType = IOPinStatusCodes(*)(const GpioMode&, IOPinPeripheralBase*);
+using ConfigStateFunctionType = IOPinStatusCodes(*)(const GpioState&, IOPinPeripheralBase*);
 using IOPinFunctionsContainer = Container<IOPinProperties, ConfigPortFunctionType, ConfigPinFunctionType, ConfigModeFunctionType, ConfigStateFunctionType>;
 
 
@@ -128,27 +128,27 @@ class IOPin  : public IOPinParent
         template <typename Arg>
         IOPinStatusCodes init(const Arg &arg);
 
-        constexpr static bool configPort(const GpioPort& mode, ConfigFunctionsArgumentType* obj) {
+        constexpr static IOPinStatusCodes configPort(const GpioPort& mode, IOPinPeripheralBase* obj) {
 
-            return true; 
+            return IOPinStatusCodes::Ready;
         }
-        constexpr static bool configPin(const GpioPin& pin, ConfigFunctionsArgumentType* obj) {
+        constexpr static IOPinStatusCodes configPin(const GpioPin& pin, IOPinPeripheralBase* obj) {
 
             uint32_t a = 32;
             uint32_t b = a / 41;
-            return true; 
+            return IOPinStatusCodes::Ready;
         }
-        constexpr static bool configMode(const GpioMode& pin, ConfigFunctionsArgumentType* obj) {
+        constexpr static IOPinStatusCodes configMode(const GpioMode& pin, IOPinPeripheralBase* obj) {
 
             uint32_t a = 32;
             uint32_t b = a / 41;
-            return true; 
+            return IOPinStatusCodes::Ready;
         }
-        constexpr static bool configState(const GpioState& pin, ConfigFunctionsArgumentType* obj) {
+        constexpr static IOPinStatusCodes configState(const GpioState& pin, IOPinPeripheralBase* obj) {
 
             uint32_t a = 32;
             uint32_t b = a / 41;
-            return true; 
+            return IOPinStatusCodes::Reset;
         }
 
         void setInstancePtr();

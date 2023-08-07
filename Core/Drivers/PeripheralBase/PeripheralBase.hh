@@ -26,7 +26,6 @@ struct StaticManager { std::size_t classInstanceCounter; };
 /**
  * @brief 
  * 
- * @tparam Instance is a pointer to a struct that maps STM32 peripheral's register's address
  * @tparam StatusCode is an enum class listing all the possible errors/malfunctioning (hardware related) for that particular peripheral
  * @tparam Parameter is an object of the type "types"
  */
@@ -47,8 +46,8 @@ class PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels
     protected:
 
         using PeripheralBaseType = PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>;
-        using FunctionsContainerType = Container<ParametersLabels, bool(*)(const Parameters&, PeripheralBaseType*) ...>;
-        using ConfigFunctionsResponseType = std::array<bool, sizeof...(Parameters)>;
+        using FunctionsContainerType = Container<ParametersLabels, StatusCode(*)(const Parameters&, PeripheralBaseType*) ...>;
+        using ConfigFunctionsResponseType = std::array<StatusCode, sizeof...(Parameters)>;
 
         //<---------------------------------------------- constructors---------------------------------------------->//
         template<typename... Functions>
@@ -92,7 +91,8 @@ class PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels
         //<---------------------------------------------------------------------------------------------------------->//
 
         //<---------------------------------------------- Hardware initialization methods --------------------------->//
-        bool init(const bool& checkMandatoryParameters = true);
+        ConfigFunctionsResponseType init();
+        //template<std::size_t
 
         //<---------------------------------------------------------------------------------------------------------->//
 
@@ -107,13 +107,13 @@ class PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels
         void setFunctionsPtr(const Container<ParametersLabels, Functions...>& functions);
 
         template<std::size_t I = 0>
-        constexpr bool invokeAllConfigFunctionsHelper(std::array<bool, sizeof...(Parameters)>& v);
+        constexpr StatusCode invokeAllConfigFunctionsHelper(std::array<StatusCode, sizeof...(Parameters)>& v);
 
         template<std::size_t I>
-        constexpr bool invokeConfigFunction();
+        constexpr StatusCode invokeConfigFunction();
 
         template<ParametersLabels Parameter>
-        constexpr bool invokeConfigFunction();
+        constexpr StatusCode invokeConfigFunction();
 
         constexpr ConfigFunctionsResponseType invokeAllConfigFunctions();
         //<---------------------------------------------------------------------------------------------------------->//
@@ -135,7 +135,7 @@ template<typename StatusCode, std::size_t MandatoryParameters, typename Paramete
 StaticManager<PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>> PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::staticManager{0};
 
 template<EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-Container<ParametersLabels, bool(*)(const Parameters&, PeripheralBase<StatusCode,  MandatoryParameters, Container<ParametersLabels, Parameters...>>*) ...>*const PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::functions = new FunctionsContainerType;
+Container<ParametersLabels, StatusCode(*)(const Parameters&, PeripheralBase<StatusCode,  MandatoryParameters, Container<ParametersLabels, Parameters...>>*) ...>*const PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::functions = new FunctionsContainerType;
 
 template <EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
 template <typename... Functions>
@@ -171,9 +171,9 @@ constexpr PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLa
 }
 
 template <EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-inline bool PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::init(const bool& check)
+inline std::array<StatusCode, sizeof...(Parameters)> PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::init()
 {
-
+    //ConfigFunctionsResponseType responses = invokeAllConfigFunctions();
 }
 
 
@@ -249,7 +249,7 @@ inline constexpr bool PeripheralBase<StatusCode, MandatoryParameters, Container<
 
 template <EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
 template <ParametersLabels Parameter>
-constexpr bool PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeConfigFunction()
+constexpr StatusCode PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeConfigFunction()
 {
     auto && arg = this->parameters->template getMemberValue<Parameter>();
     return this->functions->template getMemberValue<Parameter>()(arg, this);
@@ -257,7 +257,7 @@ constexpr bool PeripheralBase<StatusCode, MandatoryParameters, Container<Paramet
 
 template <EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
 template <std::size_t I>
-constexpr bool PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeConfigFunction()
+constexpr StatusCode PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeConfigFunction()
 {
     constexpr ParametersLabels functionIndex = static_cast<ParametersLabels>(I);
     auto && arg = this->parameters->template getMemberValue<functionIndex>();
@@ -265,16 +265,16 @@ constexpr bool PeripheralBase<StatusCode, MandatoryParameters, Container<Paramet
 }
 
 template <EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-constexpr std::array<bool, sizeof...(Parameters)> PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeAllConfigFunctions()
+constexpr std::array<StatusCode, sizeof...(Parameters)> PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeAllConfigFunctions()
 {
-    std::array<bool, numberOfProperties> results;
+    std::array<StatusCode, numberOfProperties> results;
     invokeAllConfigFunctionsHelper<0>(results);
     return results;
 }
 
 template <EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
 template <std::size_t I>
-constexpr bool PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeAllConfigFunctionsHelper(std::array<bool, sizeof...(Parameters)>& v)
+constexpr StatusCode PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::invokeAllConfigFunctionsHelper(ConfigFunctionsResponseType& v)
 {
     if constexpr(I < numberOfProperties)
     {

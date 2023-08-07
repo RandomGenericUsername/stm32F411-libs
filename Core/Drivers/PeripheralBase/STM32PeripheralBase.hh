@@ -33,7 +33,7 @@ struct PeripheralMap<RCC_TypeDef> {
 };
 
 
-template<STM32Peripheral Instance, typename StatusCode, std::size_t MandatoryParameters, typename ParametersLabels, typename ...Parameters>
+template<STM32Peripheral Instance, typename BaseClass>
 class STM32PeripheralBase;
 
 
@@ -46,7 +46,7 @@ class STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParamete
     protected:
 
         using PeripheralBaseParentType = PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>;
-        using STM32PeripheralBaseType = STM32PeripheralBase<Instance, StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>;
+        using STM32PeripheralBaseType = STM32PeripheralBase<Instance, PeripheralBaseParentType>;
 
         //<---------------------------------------------- constructors---------------------------------------------->//
         template<typename... Functions>
@@ -65,47 +65,36 @@ class STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParamete
         virtual void setDefaultSettings() = 0;
 };
 
-/*
-
 template <STM32Peripheral Instance, EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
 template <typename... Functions>
-inline constexpr STM32PeripheralBase<Instance, StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::STM32PeripheralBase(const Container<ParametersLabels, Functions...> &functions)
+inline constexpr STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>>::STM32PeripheralBase(const Container<ParametersLabels, Functions...> &functions)
     : PeripheralBaseParentType(functions)
 {
-
 }
 
-
-template<STM32Peripheral  Instance, EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-STM32PeripheralBase<Instance, StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::~STM32PeripheralBase()
+template <STM32Peripheral Instance, EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
+inline STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>>::~STM32PeripheralBase()
 {
     instance = nullptr;
 }
 
-
 template <STM32Peripheral Instance, EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-constexpr STM32PeripheralBase<Instance, StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::STM32PeripheralBase(const STM32PeripheralBase &other)
+inline constexpr STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>>::STM32PeripheralBase(const STM32PeripheralBase &other)
 {
-     
 }
 
 template <STM32Peripheral Instance, EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-constexpr STM32PeripheralBase<Instance, StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::STM32PeripheralBase(STM32PeripheralBase &&other)
+inline constexpr STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>>::STM32PeripheralBase(STM32PeripheralBase &&other)
 {
-     
 }
 
-
 template <STM32Peripheral Instance, EnumType StatusCode, std::size_t MandatoryParameters, EnumType ParametersLabels, typename... Parameters>
-inline void STM32PeripheralBase<Instance, StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>::setInstancePtr(const Instance &peripheral)
+inline void STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels, Parameters...>>>::setInstancePtr(const Instance &peripheral)
 {
     constexpr auto instances = PeripheralMap<Instance>::instances();
     std::apply([this, &peripheral](auto&&... instance) {
         ((instance == peripheral ? this->instance = instance : false), ...);
     }, instances);
 }
-
-
-**/
 
 #endif  // __S_T_M32_PERIPHERAL_BASE_HH_95TIBHUKGW20__

@@ -1,6 +1,6 @@
 #include <iostream>
-#include<type_traits>
-
+#include <type_traits>
+#include <concepts>
 
 int main(void)
 {

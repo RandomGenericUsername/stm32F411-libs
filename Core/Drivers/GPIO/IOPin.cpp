@@ -8,6 +8,8 @@ IOPin::IOPin()
 {
     //setConfigFunctionsExecutionOrder(IOPinFunctionsExecutionOrder{IOPinProperties::mode, IOPinProperties::pin, IOPinProperties::port});
     //setAllParametersValue(GpioPort::A, GpioPin::null, GpioMode::alternateFunction, GpioState::null);
+    std::size_t a = this->mandatoryParameter;
+    a = a / 32;
 
 }
 

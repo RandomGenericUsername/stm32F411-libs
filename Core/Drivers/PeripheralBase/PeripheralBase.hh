@@ -18,6 +18,8 @@
 #include <PeripheralBaseTypes.hh>
 #include <Container.hh>
 #include <bitset>
+#include <Utils.hh>
+
 
 
 template<typename T>
@@ -30,6 +32,8 @@ struct StaticManager { std::size_t classInstanceCounter; };
  * @tparam Parameter is an object of the type "types"
  */
 
+
+#ifdef COMPILE
 
 template<typename StatusCode, std::size_t MandatoryParameters,  typename ParametersLabels, typename ...Parameters>
 class PeripheralBase; 
@@ -99,6 +103,8 @@ class PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels
         //Children-accessible class members
         void setParameterAsMandatory(const ParametersLabels& parameter);
 
+        constexpr const static std::size_t mandatoryParameter { MandatoryParameters };
+
     private:
 
         //<---------------------------------------------------------------------------------------------------------->//
@@ -124,7 +130,6 @@ class PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels
 
         static StaticManager<PeripheralBaseType> staticManager;
         static const constexpr std::size_t numberOfProperties { sizeof...(Parameters) };
-        constexpr static std::bitset<static_cast<size_t>(sizeof...(Parameters))> mandatoryParameter { MandatoryParameters };
         static FunctionsContainerType *const functions;
 
         StatusCode status { StatusCode::Reset };
@@ -291,5 +296,7 @@ bool PeripheralBase<StatusCode, MandatoryParameters, Container<ParametersLabels,
         return true;
     return false;    
 }
+
+#endif
 
 #endif // __PERIPHERALBASE_H__

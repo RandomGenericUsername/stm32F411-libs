@@ -21,7 +21,7 @@ LINKER_PATH := $(shell pwd)/${STARTUP_DIR}/${LINKER}
 TARGET := ${OBJ_DIR}/${PROJECT_NAME}.elf
 
 # Define include directories
-INC_DIRS := $(shell find ${CORE_DIR}/${INC_DIR} -type d) $(shell find ${CORE_DIR}/${UTILS_DIR}/* -type d) $(shell find ${CORE_DIR}/${DRIVERS_DIR}/* -type d)
+INC_DIRS := $(shell find ${CORE_DIR}/${INC_DIR} -type d) $(shell find ${CORE_DIR}/${UTILS_DIR} -type d) $(shell find ${CORE_DIR}/${DRIVERS_DIR}/* -type d)
 INC_FLAGS := $(addprefix -I, $(INC_DIRS))
 
 EXCEPTIONS_FLAG := -fexceptions

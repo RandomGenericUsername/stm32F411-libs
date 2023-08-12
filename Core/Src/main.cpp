@@ -10,6 +10,7 @@
 
 
 using namespace std::string_literals;
+//IOPin A;
 
 
 int main(void)

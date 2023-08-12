@@ -5,6 +5,8 @@
 #include <PeripheralBase.hh>
 #include <GeneralConcepts.hh>
 
+#ifdef COMPILE
+
 template <typename Instance>
 struct PeripheralMap;
 
@@ -97,4 +99,5 @@ inline void STM32PeripheralBase<Instance, PeripheralBase<StatusCode, MandatoryPa
     }, instances);
 }
 
+#endif
 #endif  // __S_T_M32_PERIPHERAL_BASE_HH_95TIBHUKGW20__

@@ -8,7 +8,7 @@
 
 
 
-#define COMPILE
+//#define COMPILE
 #ifdef COMPILE
 
 #define AVAILABLE_PORTS 7U
@@ -30,7 +30,7 @@ enum class IOPinStatusCodes
 //using IOPinPropertiesContainer = Container<IOPinProperties, GpioPort, GpioPin, GpioMode, GpioState, GpioOutputType, GpioOutputSpeed, GpioPUPD>;
 
 enum class IOPinProperties : uint8_t { port, pin, mode, state,  __length };
-constexpr std::size_t IOPinMandatoryParameters = static_cast<std::size_t>(IOPinProperties::port) | static_cast<std::size_t>(IOPinProperties::pin);
+constexpr std::size_t IOPinMandatoryParameters = 1 << static_cast<std::size_t>(IOPinProperties::port) | 1 << static_cast<std::size_t>(IOPinProperties::pin);
 using IOPinPropertiesContainer = Container<IOPinProperties, GpioPort, GpioPin, GpioMode, GpioState>;
 using IOPinPeripheralBase = PeripheralBase<IOPinStatusCodes, IOPinMandatoryParameters, IOPinPropertiesContainer>;
 using IOPinParent = STM32PeripheralBase<GPIO_TypeDef, IOPinPeripheralBase>;

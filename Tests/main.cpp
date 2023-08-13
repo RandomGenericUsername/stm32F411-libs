@@ -4,5 +4,6 @@
 
 int main(void)
 {
+    std::cout << "hola " << std::endl;
     return 0;
 }

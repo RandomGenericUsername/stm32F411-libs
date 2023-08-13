@@ -9,8 +9,7 @@
  * @tparam Parameters: is an enum class that contains the labels for all the members in the container, plus, one extra mandatory member __length. If this member is not in the enum, compiling this class will fail 
  * @tparam Members: is a argument pack of all the instantations to be stored in the container 
  */
-template <EnumType Parameters, template<typename...> class ContainerBase, typename... Members>
-    requires isContainerBase<ContainerBase, Members...>
+template <EnumType Parameters, typename... Members>
 class Container : public ContainerBase<Members...>
 {
     public:
@@ -63,7 +62,6 @@ class Container : public ContainerBase<Members...>
         );
 };
 
-#ifdef CC
 
 /** @brief Constructor requiring only the types to be stored, so no particular instance of an object has to be passed at the momment of instantation of the class*/
 template <EnumType Parameters, typename... Members>
@@ -218,7 +216,5 @@ constexpr std::vector<uint8_t> Container<Parameters, Members...>::isTypeAndValue
     ContainerBase<Members...>::template isTypeAndValueIn<0, Type>(arg, result);
     return result;
 }
-
-#endif
 
 #endif // __CONTAINER_H__

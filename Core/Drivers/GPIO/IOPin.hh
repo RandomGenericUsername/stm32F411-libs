@@ -8,7 +8,7 @@
 
 
 
-#define COMPILE
+//#define COMPILE
 #ifdef COMPILE
 
 #define AVAILABLE_PORTS 7U

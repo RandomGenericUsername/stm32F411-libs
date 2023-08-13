@@ -15,6 +15,8 @@
 template <typename... Members>
 class ContainerBase
 {
+
+
     protected:
 
         constexpr explicit ContainerBase();
@@ -433,7 +435,6 @@ constexpr void ContainerBase<Members...>::apply_and_fold_d(F&& f, Tuple1&& t1, T
 
 template<template<typename...> class TemplateUnderTest, typename... Args>
 concept isContainerBase = std::is_same_v<TemplateUnderTest<Args...>, ContainerBase<Args...>>;
-
 
 
 #endif // __CONTAINERBASE_H__

@@ -36,7 +36,7 @@
             "name": "Debug Test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Tests/Build/Test.elf",
+            "program": "${workspaceFolder}/Tests/stm32F411-libs.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
